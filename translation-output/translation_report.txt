@@ -1,0 +1,43 @@
+======================================================================
+TRANSLATION REPORT – PHP → Ur/Web Security Analysis
+======================================================================
+
+File: dashboard.php  →  fun dashboard
+  Method: BOTH  |  Session required: True
+  SQL queries detected: 4
+  Vulnerabilities found & remediated:
+    ✓  XSS:unescaped_output
+    ✓  SQLI:string_interpolation
+    ✓  IDOR:delete_without_owner_check
+    ✓  SESSION_FIXATION:no_id_regeneration
+
+File: index.php  →  fun index
+  Method: GET  |  Session required: True
+  SQL queries detected: 0
+  Vulnerabilities found & remediated:
+    ✓  SESSION_FIXATION:no_id_regeneration
+
+File: login.php  →  fun login
+  Method: POST  |  Session required: True
+  SQL queries detected: 1
+  Vulnerabilities found & remediated:
+    ✓  WEAK_HASH:md5_password
+    ✓  XSS:unescaped_output
+    ✓  SESSION_FIXATION:no_id_regeneration
+
+File: logout.php  →  fun logout
+  Method: GET  |  Session required: False
+  SQL queries detected: 0
+  No major vulnerabilities detected.
+
+──────────────────────────────────────────────────────────────────────
+Total vulnerabilities remediated: 8
+
+Security guarantees in generated Ur/Web code:
+  • SQL Injection  – impossible (type system)
+  • XSS            – impossible (type system)
+  • CSRF           – impossible (runtime)
+  • IDOR           – prevented (WHERE UserId = {[uid]})
+  • Weak hashing   – prevented (bcrypt)
+  • Session fixation – prevented (runtime)
+======================================================================

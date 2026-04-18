@@ -1,0 +1,16 @@
+# app.urp — Ur/Web project file for the Health Tracker application
+#
+# Build:   urweb app
+# Run:     ./app.exe -p 8080
+# Access:  http://localhost:8080/HealthTracker/login
+
+# ── External libraries ──────────────────────────────────────────────────────
+# Ur/Web standard library is included automatically.
+# For bcrypt password hashing we use the urweb-crypto contrib library.
+library /usr/local/lib/urweb/crypto
+
+# ── Database ─────────────────────────────────────────────────────────────────
+database dbname=health_tracker_urweb user=postgres password=postgres host=localhost
+
+# ── Source files ─────────────────────────────────────────────────────────────
+app

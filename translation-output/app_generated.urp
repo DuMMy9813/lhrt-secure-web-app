@@ -1,0 +1,4 @@
+# app_generated.urp — Auto-generated Ur/Web project file
+library /usr/local/lib/urweb/crypto
+database dbname=health_tracker_urweb user=postgres password=postgres host=localhost
+app_generated
