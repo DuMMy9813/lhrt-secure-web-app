@@ -1,99 +1,31 @@
----
+# Lightweight Health Record Tracker (LHRT)
+Secure Web Application Development Using Ur/Web
 
-## Overview
+## Project Structure
+- vulnerable-php-app — Deliberately insecure PHP baseline
+- secure-urweb-app — Secure Ur/Web implementation  
+- php-to-urweb-translator — Automated vulnerability translator
+- translation-output — Generated Ur/Web code from translator
 
-This project analyses Ur/Web as a framework that supports secure web application 
-development by design. The same application — a personal health record tracker — 
-is built twice:
+## PHP Setup
+1. Copy files to C:\xampp\htdocs\health-tracker
+2. Import database.sql in phpMyAdmin
+3. Visit localhost/health-tracker
+4. Login: bishal / password123
 
-1. **PHP version** — a fully functional but deliberately vulnerable web application 
-   exposing real OWASP Top-10 weaknesses
-2. **Ur/Web version** — a functionally equivalent application where the same 
-   vulnerabilities are structurally impossible due to Ur/Web's type system
-
----
-
-## Vulnerabilities Demonstrated (PHP)
-
-| Vulnerability | Description |
-|---|---|
-| SQL Injection | User input concatenated directly into SQL queries |
-| XSS | Session cookies stolen via injected JavaScript |
-| CSRF | No token validation on form submissions |
-| IDOR | Any user can view or delete any other user's records |
-| Weak Hashing | Passwords stored using MD5 with no salt |
-| Session Fixation | Session ID never regenerated after login |
-
----
-
-## Security Guarantees (Ur/Web)
-
-Ur/Web eliminates these vulnerabilities at the **compiler level**:
-
-- **SQL Injection** — impossible: typed `{[param]}` antiquotation enforces 
-  separation between data and instructions
-- **XSS** — impossible: `{[…]}` combinator auto-escapes all HTML output
-- **CSRF** — impossible: runtime injects synchroniser tokens automatically
-- **IDOR** — prevented: ownership enforced in every query via `AND UserId = {[uid]}`
-- **Weak Hashing** — prevented: bcrypt via `Crypto.bcryptCheck`
-- **Session Fixation** — prevented: cryptographic session IDs, auto-regenerated
-
----
-
-## PHP Application Setup
-
-### Requirements
-- XAMPP (Apache + MySQL)
-
-### Steps
-1. Copy `vulnerable-php-app/` files to `C:\xampp\htdocs\health-tracker\`
-2. Open phpMyAdmin at `localhost/phpmyadmin`
-3. Create database `health_tracker`
-4. Import `database.sql`
-5. Visit `localhost/health-tracker`
-
-### Test Credentials
-- Username: `bishal` / Password: `password123`
-- Username: `anju` / Password: `password123`
-
----
-
-## Ur/Web Application Setup
-
-### Requirements
-- Ur/Web compiler (http://www.impredicative.com/ur/)
-- SQLite3
-
-### Steps
-```bash
-cd secure-urweb-app
-urweb healthtracker
-./healthtracker.exe -p 8080
-```
-
-Visit `http://localhost:8080/Healthtracker/main`
-
----
+## Ur/Web Setup
+1. Install Ur/Web compiler from impredicative.com/ur
+2. Run: urweb healthtracker
+3. Run: ./healthtracker.exe -p 8080
+4. Visit: localhost:8080/Healthtracker/main
 
 ## Automated Translator
-
-The Python translator scans PHP source code, detects vulnerabilities, and 
-generates secure Ur/Web equivalents automatically.
-
-```bash
-cd php-to-urweb-translator
 python translator.py --input ../vulnerable-php-app/ --output ../translation-output/ --verbose
-```
+Results: 4 files scanned, 8 vulnerabilities remediated in under 1 second
 
-### Results
-- **4 files** scanned
-- **8 vulnerabilities** detected and remediated
-- **< 1 second** execution time
-
----
+## Vulnerabilities Demonstrated
+SQL Injection, XSS, CSRF, IDOR, Weak Hashing, Session Fixation
 
 ## References
-
 - Ur/Web: http://www.impredicative.com/ur/
 - OWASP Top Ten: https://owasp.org/www-project-top-ten/
-- A. Chlipala, "Ur/Web: A Simple Model for Programming the Web," POPL 2015
