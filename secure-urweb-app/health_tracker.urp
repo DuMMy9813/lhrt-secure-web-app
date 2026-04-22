@@ -2,4 +2,4 @@ dbms sqlite
 database /home/kouhai/health-tracker-urweb/health_tracker.db
 allow url _
 
-healthtracke
+healthtracker
