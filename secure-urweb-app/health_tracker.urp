@@ -1,5 +1,1 @@
-dbms sqlite
-database /home/kouhai/health-tracker-urweb/health_tracker.db
-allow url _
-
-healthtracker
+health_tracker
