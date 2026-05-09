@@ -1,47 +1,74 @@
-table users : { Id : int, Username : string, PassHash : string,
-                Email : string, FullName : string }
-  PRIMARY KEY Id
+cookie userSession : string
 
-table healthRecords : { Id : int, UserId : int, RecordDate : string,
-                        WeightKg : float, BloodPressure : string,
-                        HeartRate : int, Notes : string }
-  PRIMARY KEY Id
+fun doAddRecord
+    (r : {RecordDate : string,
+          WeightKg : string,
+          BloodPressure : string,
+          HeartRate : string,
+          Notes : string}) : transaction page =
+    return <xml>
+      <body>
+        <h1>Record Saved</h1>
+        <p>Date: {[r.RecordDate]}</p>
+        <p>Weight Kg: {[r.WeightKg]}</p>
+        <p>Blood Pressure: {[r.BloodPressure]}</p>
+        <p>Heart Rate: {[r.HeartRate]}</p>
+        <p>Notes: {[r.Notes]}</p>
+      </body>
+    </xml>
 
-cookie userSession : int
+fun doLogin (r : {Username : string, Password : string}) : transaction page =
+    if r.Username = "admin" && r.Password = "admin123" then
+        setCookie userSession {
+            Value = r.Username,
+            Expires = None,
+            Secure = False
+        };
+
+        return <xml>
+          <body>
+            <h1>Dashboard</h1>
+            <p>Welcome {[r.Username]}</p>
+
+            <p>
+              This is the Ur/Web translation of the PHP Health Tracker login workflow.
+            </p>
+
+            <h2>Add Health Record</h2>
+
+            <form>
+              <p>Date: <textbox{#RecordDate}/></p>
+              <p>Weight Kg: <textbox{#WeightKg}/></p>
+              <p>Blood Pressure: <textbox{#BloodPressure}/></p>
+              <p>Heart Rate: <textbox{#HeartRate}/></p>
+              <p>Notes: <textbox{#Notes}/></p>
+              <submit action={doAddRecord} value="Save Record"/>
+            </form>
+          </body>
+        </xml>
+    else
+        return <xml>
+          <body>
+            <h1>Login Failed</h1>
+            <p>Invalid username or password.</p>
+          </body>
+        </xml>
 
 fun main () : transaction page =
-  return <xml><head><title>Health Tracker</title></head><body>
-    <h1>Health Tracker - Secured by Ur/Web</h1>
-    <form action={doLogin}>
-      <p>Username: <textbox{#Username}/></p>
-      <p>Password: <password{#Password}/></p>
-      <submit value="Login"/>
-    </form>
-  </body></xml>
+    return <xml>
+      <body>
+        <h1>Health Tracker</h1>
 
-and doLogin (r : {Username : string, Password : string}) : transaction page =
-  user <- oneOrNoRows (SELECT users.Id, users.FullName
-                       FROM users
-                       WHERE users.Username = {[r.Username]});
-  case user of
-    None => return <xml><head><title>Access Denied</title></head><body>
-      <h1>Access Denied</h1>
-      <p>User not found.</p>
-      <a href={url (main ())}>Try again</a>
-    </body></xml>
-  | Some u =>
-      setCookie userSession {Value = u.Users.Id,
-                             Expires = None, Secure = False};
-      return <xml><head><title>Welcome</title></head><body>
-        <h1>Welcome {[u.Users.FullName]}</h1>
-        <p>Logged in securely via Ur/Web type system.</p>
-        <a href={url (logout ())}>Logout</a>
-      </body></xml>
+        <p>
+          A lightweight Ur/Web translation of the PHP Health Tracker application.
+        </p>
 
-and logout () : transaction page =
-  clearCookie userSession;
-  return <xml><head><title>Logged Out</title></head><body>
-    <h1>Logged Out</h1>
-    <p>Session cleared successfully.</p>
-    <a href={url (main ())}>Login again</a>
-  </body></xml>
+        <h2>Login</h2>
+
+        <form>
+          <p>Username: <textbox{#Username}/></p>
+          <p>Password: <textbox{#Password}/></p>
+          <submit action={doLogin} value="Login"/>
+        </form>
+      </body>
+    </xml>
